@@ -35,7 +35,10 @@ public class Battles {
 
         switch (choice) {
             case 1:
-                System.out.println("You chose to fight!");
+                int heroHP = 9;
+                int monsterHP = 1;
+
+                System.out.println("\nYou chose to fight!");
 
                 int heroInitiative = 5; // Riddarens Initiativ. Här ska man egentligen hämta just den valda Hjältens Initiativ
                 int heroInitiativeSum = rollDice(heroInitiative);
@@ -46,33 +49,55 @@ public class Battles {
                 System.out.println("The monster's initiative is: " + monsterInitiativeSum);
 
                 if (heroInitiativeSum > monsterInitiativeSum) {
-                    int attack = 6; // Riddarens Attack. Här ska man egentligen hämta just den valda Hjältens Attack
-                    int attackSum = rollDice(attack);
-                    System.out.println("You get to starta attacking!");
-                    System.out.println("The result of your attack is: " + attackSum);
 
-                    int agility = 3; // Spindelns Smidighet. Här ska man egentligen hämta just det slumpade monstrets Smidighet
-                    int agilitySum = rollDice(agility);
-                    System.out.println("The result of the monster's agility is: " + agilitySum);
-                    
-                    if (attackSum > agilitySum) {
-                        System.out.println("Your attack hit the monster which loses 1 HP!");
-                    } else {
-                        System.out.println("The monster dodges your attack and you miss...");
+                    System.out.println("\nThis means that you get to start attacking!");
+
+                    while (heroHP >= 1 && monsterHP >= 1) {
+
+                        if (heroHP >= 1) {
+                            int heroAttack = heroAttack();
+                            if (heroAttack == 1) {
+                                monsterHP--;
+                            }
+                        }
+
+                        if (monsterHP >= 1) {
+                            int monsterAttack = monsterAttack();
+                            if (monsterAttack == 1) {
+                                heroHP--;
+                            }
+                        }
                     }
-                    
                 } else {
-                    System.out.println("The monster starts to attack you");
-                    
-                    int attack = 2; // Spindelns Attack. Här ska man egentligen hämta just det slumpade Monstrets Attack
-                    int attackSum = rollDice(attack);
-                    System.out.println("The result of the monster's attcak is: " + attackSum);
-                    
-                    int agility = 4; // Riddarens Smidighet. Här ska man egentligen hämta just den valda Hjältens Smidighet
-                    int agilitySum = rollDice(agility);
-                    System.out.println("The result of your agility is: " + agilitySum);
-                    
+
+                    System.out.println("\nThis means that the monster starts attacking you!");
+
+                    while (heroHP >= 1 && monsterHP >= 1) {
+
+                        if (monsterHP >= 1) {
+                            int monsterAttack = monsterAttack();
+                            if (monsterAttack == 1) {
+                                heroHP--;
+                            }
+                        }
+
+                        if (heroHP >= 1) {
+                            int heroAttack = heroAttack();
+                            if (heroAttack == 1) {
+                                monsterHP--;
+                            }
+                        }
+                    }
+
                 }
+                if (heroHP <= 0) {
+                    System.out.println("\n+          +");
+                    System.out.println("| You died |");
+                }
+                if (monsterHP <= 0) {
+                    System.out.println("\nYOU DEFEATED THE BEAST!!");
+                }
+
                 break;
 
             case 2:
@@ -96,6 +121,51 @@ public class Battles {
         }
         return sum;
 
+    }
+
+    public static int attack(int attack) {
+        int attackSum = rollDice(attack);
+        return attackSum;
+    }
+
+    public static int dodge(int inititative) {
+        int initiativeSum = rollDice(inititative);
+        return initiativeSum;
+    }
+
+    public static int heroAttack() {
+
+        int attackSum = attack(6); // 6 Är riddarens Attack. Här ska vald hjältes attack användas
+        System.out.println("\nYou attack with a level " + attackSum + " attack");
+
+        int agilitySum = dodge(3); // Spindelns Smidighet. Här ska man egentligen hämta just det slumpade monstrets Smidighet
+        System.out.println("and the monster try to get away with a level " + agilitySum + " dodge!");
+
+        if (attackSum > agilitySum) {
+            System.out.println("So your attack hit the monster which loses 1 HP!");
+            return 1;
+        } else {
+            System.out.println("So you miss the monster...");
+            return 0;
+        }
+
+    }
+
+    public static int monsterAttack() {
+
+        int attackSum = attack(2); // Spindelns Attack. Här ska man egentligen hämta just det slumpade Monstrets Attack
+        System.out.println("\nThe monster attacks you with a level " + attackSum + " attack");
+
+        int agilitySum = dodge(4); // Riddarens Smidighet. Här ska man egentligen hämta just den valda Hjältens Smidighet
+        System.out.println("and you try to get away with a level " + agilitySum + " dodge!");
+
+        if (attackSum > agilitySum) {
+            System.out.println("So the monster's attack hit you an you lose 1 HP...");
+            return 1;
+        } else {
+            System.out.println("So the monster swings and misses you!");
+            return 0;
+        }
     }
 
 }
